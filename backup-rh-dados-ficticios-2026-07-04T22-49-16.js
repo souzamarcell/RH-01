@@ -2588,14 +2588,14 @@ window.BACKUP_DATA = {
     }
   ],
   "configuracoes": {
-    "nomeEmpresa": "Vetta RH",
+    "nomeEmpresa": "GráficosNet RH",
     "logo": null,
-    "tema": "dark",
+    "tema": "light",
     "idioma": "pt-BR"
   },
   "__meta": {
     "geradoEm": "2026-07-04T22:49:16.554Z",
-    "sistema": "Vetta RH",
+    "sistema": "GráficosNet RH",
     "versao": "1.0",
     "observacao": "Backup com dados fictícios para testes"
   }

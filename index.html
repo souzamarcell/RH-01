@@ -1683,6 +1683,7 @@
           }
           dbSet(key, backup[key])
         })
+        ensureBaseUsers()
         return true
       }
 
@@ -1707,7 +1708,9 @@
       function ensureBaseUsers() {
         const usuarios = dbGet('usuarios') || []
         const novos = []
-        if (!usuarios.some((u) => u.usuario.toLowerCase() === 'admin')) {
+        if (
+          !usuarios.some((u) => (u.usuario || '').toLowerCase() === 'admin')
+        ) {
           novos.push({
             id: uid('usr'),
             usuario: 'admin',
@@ -1719,7 +1722,9 @@
             criadoPor: 'sistema',
           })
         }
-        if (!usuarios.some((u) => u.usuario.toLowerCase() === 'Rodrigo')) {
+        if (
+          !usuarios.some((u) => (u.usuario || '').toLowerCase() === 'rodrigo')
+        ) {
           novos.push({
             id: uid('usr'),
             usuario: 'Rodrigo',
@@ -2260,28 +2265,28 @@
         )
         applySidebarCollapsedState()
       }
+      function resetAppData() {
+        clearAppStorage()
+        seedDatabase()
+        applyTheme()
+        applyCompanyBranding()
+        if (state.currentUser) {
+          buildSidebar()
+          updateUserChip()
+          navigate('dashboard')
+        }
+        toast('Dados reiniciados com sucesso.', 'success')
+      }
       document.getElementById('reset-data-btn').onclick = () => {
         confirmDialog(
-          'Deseja limpar os dados salvos no LocalStorage e restaurar o backup anexado?',
-          async () => {
-            const restored = await restoreBackupData()
-            if (restored) {
-              if (state.currentUser) {
-                applyTheme()
-                applyCompanyBranding()
-                buildSidebar()
-                updateUserChip()
-                navigate('dashboard')
-              } else {
-                applyTheme()
-                applyCompanyBranding()
-              }
-            }
+          'Deseja limpar os dados salvos no LocalStorage e reiniciar com os dados básicos do sistema?',
+          () => {
+            resetAppData()
           },
           {
-            title: 'Restaurar backup',
+            title: 'Resetar dados',
             danger: true,
-            confirmLabel: 'Restaurar',
+            confirmLabel: 'Resetar',
           }
         )
       }
