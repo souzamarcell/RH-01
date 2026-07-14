@@ -1390,7 +1390,7 @@
             />
           </svg>
         </div>
-        <div class="login-title" id="login-company-name">GráficosNet RH</div>
+        <div class="login-title" id="login-company-name">GráficosNet RH 2</div>
         <div class="login-sub">Acesse o painel de Gestão de Pessoas</div>
         <div class="login-error" id="login-error"></div>
         <form id="login-form" autocomplete="off">
@@ -1416,7 +1416,7 @@
             Entrar
           </button>
         </form>
-        <div class="login-hint">Rodrigo / 123  (credenciais iniciais)</div>
+        <div class="login-hint">Rodrigo / 123 (credenciais iniciais)</div>
       </div>
     </div>
 
@@ -1429,6 +1429,26 @@
         </div>
         <nav class="sidebar-nav" id="sidebar-nav"></nav>
         <div class="sidebar-foot">
+          <button
+            class="collapse-btn"
+            id="reset-data-btn"
+            title="Restaurar backup anexado"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M3 6h18" stroke-linecap="round" />
+              <path
+                d="M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2m2 0-1 14a1 1 0 01-1 1H8a1 1 0 01-1-1L6 6"
+              />
+            </svg>
+            <span>Resetar dados</span>
+          </button>
           <button class="collapse-btn" id="collapse-btn">
             <svg
               viewBox="0 0 24 24"
@@ -1573,6 +1593,7 @@
 
     <div id="toast-root"></div>
 
+    <script src="backup-rh-dados-ficticios-2026-07-04T22-49-16.js"></script>
     <script>
       /* ======================================================================
    GráficosNet RH — JAVASCRIPT
@@ -1635,38 +1656,88 @@
         return new Date().toISOString()
       }
 
-      function seedDatabase() {
-        const usuarios = dbGet('usuarios')
-        if (usuarios === null) {
-          dbSet('usuarios', [
-            {
-              id: uid('usr'),
-              usuario: 'admin',
-              senha: '123',
-              nome: 'Administrador do Sistema',
-              perfil: 'Administrador',
-              status: 'Ativo',
-              criadoEm: nowISO(),
-              criadoPor: 'sistema',
-            },
-          ])
-        } else if (
-          !usuarios.some((u) => u.usuario.toLowerCase() === 'rodrigo')
-        ) {
-          dbSet('usuarios', [
-            ...usuarios,
-            {
-              id: uid('usr'),
-              usuario: 'Rodrigo',
-              senha: '123',
-              nome: 'Rodrigo Martins',
-              perfil: 'Administrador',
-              status: 'Ativo',
-              criadoEm: nowISO(),
-              criadoPor: 'sistema',
-            },
-          ])
+      const BACKUP_DATA_URL =
+        'backup-rh-dados-ficticios-2026-07-04T22-49-16.json'
+      const BACKUP_DATA = window.BACKUP_DATA || null
+
+      function clearAppStorage() {
+        Object.keys(localStorage)
+          .filter((key) => key.startsWith(LS_PREFIX))
+          .forEach((key) => localStorage.removeItem(key))
+      }
+
+      function applyBackupData(backup) {
+        if (!backup || typeof backup !== 'object') return false
+        clearAppStorage()
+        Object.keys(backup).forEach((key) => {
+          if (key === '__meta') return
+          if (key === 'configuracoes') {
+            const cfg = backup[key] || {}
+            dbSet('configuracoes', {
+              nomeEmpresa: cfg.nomeEmpresa || 'GráficosNet RH',
+              logo: cfg.logo || null,
+              tema: cfg.tema || 'light',
+              idioma: cfg.idioma || 'pt-BR',
+            })
+            return
+          }
+          dbSet(key, backup[key])
+        })
+        return true
+      }
+
+      async function restoreBackupData() {
+        try {
+          let backup = BACKUP_DATA
+          if (!backup) {
+            const response = await fetch(BACKUP_DATA_URL)
+            if (!response.ok) throw new Error('Backup não encontrado')
+            backup = await response.json()
+          }
+          if (applyBackupData(backup)) {
+            return true
+          }
+          return false
+        } catch (e) {
+          console.error('Erro ao carregar backup', e)
+          return false
         }
+      }
+
+      function ensureBaseUsers() {
+        const usuarios = dbGet('usuarios') || []
+        const novos = []
+        if (!usuarios.some((u) => u.usuario.toLowerCase() === 'admin')) {
+          novos.push({
+            id: uid('usr'),
+            usuario: 'admin',
+            senha: '123',
+            nome: 'Administrador do Sistema',
+            perfil: 'Administrador',
+            status: 'Ativo',
+            criadoEm: nowISO(),
+            criadoPor: 'sistema',
+          })
+        }
+        if (!usuarios.some((u) => u.usuario.toLowerCase() === 'Rodrigo')) {
+          novos.push({
+            id: uid('usr'),
+            usuario: 'Rodrigo',
+            senha: '123',
+            nome: 'Rodrigo Martins',
+            perfil: 'Administrador',
+            status: 'Ativo',
+            criadoEm: nowISO(),
+            criadoPor: 'sistema',
+          })
+        }
+        if (novos.length) {
+          dbSet('usuarios', [...usuarios, ...novos])
+        }
+      }
+
+      function seedDatabase() {
+        ensureBaseUsers()
         if (dbGet('funcionarios') === null) dbSet('funcionarios', [])
         if (dbGet('departamentos') === null)
           dbSet('departamentos', [
@@ -1705,7 +1776,11 @@
             idioma: 'pt-BR',
           })
       }
-      seedDatabase()
+
+      async function initializeDataLayer() {
+        const imported = await restoreBackupData()
+        if (!imported) seedDatabase()
+      }
 
       function logAudit(acao, tela, detalhes) {
         const list = dbGet('auditoria') || []
@@ -2021,6 +2096,8 @@
         }
       }
 
+      initializeDataLayer()
+
       /* ---------------------------------------------------------------------
    6. AUTH & SESSION
 --------------------------------------------------------------------- */
@@ -2182,6 +2259,31 @@
           state.sidebarCollapsed ? '1' : '0'
         )
         applySidebarCollapsedState()
+      }
+      document.getElementById('reset-data-btn').onclick = () => {
+        confirmDialog(
+          'Deseja limpar os dados salvos no LocalStorage e restaurar o backup anexado?',
+          async () => {
+            const restored = await restoreBackupData()
+            if (restored) {
+              if (state.currentUser) {
+                applyTheme()
+                applyCompanyBranding()
+                buildSidebar()
+                updateUserChip()
+                navigate('dashboard')
+              } else {
+                applyTheme()
+                applyCompanyBranding()
+              }
+            }
+          },
+          {
+            title: 'Restaurar backup',
+            danger: true,
+            confirmLabel: 'Restaurar',
+          }
+        )
       }
       document.getElementById('hamburger-btn').onclick = () => {
         document.getElementById('sidebar').classList.add('mobile-open')
