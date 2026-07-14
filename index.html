@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<title>Vetta RH | Gestão de Pessoas</title>
+<title>GráficosNet RH | Gestão de Pessoas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 /* ======================================================================
-   VETTA RH — CSS
+   GráficosNet RH — CSS
    Token system, layout primitives, components, responsive rules.
 ====================================================================== */
 :root{
@@ -388,7 +388,7 @@ tbody tr:hover{background:var(--surface-2);}
     <div class="login-logo">
       <svg viewBox="0 0 24 24" fill="none" width="28" height="28"><path d="M4 20V8l8-4 8 4v12" stroke="#C99A2E" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 20v-6h6v6" stroke="#C99A2E" stroke-width="1.8" stroke-linejoin="round"/></svg>
     </div>
-    <div class="login-title" id="login-company-name">Vetta RH</div>
+    <div class="login-title" id="login-company-name">GráficosNet RH</div>
     <div class="login-sub">Acesse o painel de Gestão de Pessoas</div>
     <div class="login-error" id="login-error"></div>
     <form id="login-form" autocomplete="off">
@@ -411,7 +411,7 @@ tbody tr:hover{background:var(--surface-2);}
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-head">
       <div class="mark">V</div>
-      <div class="brand" id="brand-name">Vetta RH</div>
+      <div class="brand" id="brand-name">GráficosNet RH</div>
     </div>
     <nav class="sidebar-nav" id="sidebar-nav"></nav>
     <div class="sidebar-foot">
@@ -427,7 +427,7 @@ tbody tr:hover{background:var(--surface-2);}
       <button class="hamburger" id="hamburger-btn" aria-label="Menu">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg>
       </button>
-      <div class="breadcrumb">Vetta RH <span>/</span> <strong id="breadcrumb-current">Dashboard</strong></div>
+      <div class="breadcrumb">GráficosNet RH <span>/</span> <strong id="breadcrumb-current">Dashboard</strong></div>
       <div class="topbar-search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>
         <input type="text" id="global-search" placeholder="Pesquisar por nome, CPF, matrícula, cargo...">
@@ -470,14 +470,14 @@ tbody tr:hover{background:var(--surface-2);}
 
 <script>
 /* ======================================================================
-   VETTA RH — JAVASCRIPT
+   GráficosNet RH — JAVASCRIPT
    Data layer, auth, router, UI components, page renderers.
 ====================================================================== */
 
 /* ---------------------------------------------------------------------
    1. DATA LAYER (LocalStorage)
 --------------------------------------------------------------------- */
-const LS_PREFIX = 'vettaRH_';
+const LS_PREFIX = 'GráficosNetRH_';
 const COLLECTIONS = ['usuarios','funcionarios','departamentos','cargos','setores','equipamentos',
   'ticketsEntrega','ticketsDevolucao','beneficios','ferias','treinamentos','auditoria','configuracoes'];
 
@@ -526,7 +526,7 @@ function seedDatabase(){
   if(dbGet('treinamentos') === null) dbSet('treinamentos', []);
   if(dbGet('auditoria') === null) dbSet('auditoria', []);
   if(dbGet('configuracoes') === null) dbSet('configuracoes', {
-    nomeEmpresa:'Vetta RH', logo:null, tema:'light', idioma:'pt-BR'
+    nomeEmpresa:'GráficosNet RH', logo:null, tema:'light', idioma:'pt-BR'
   });
 }
 seedDatabase();
@@ -1655,7 +1655,7 @@ function viewTicket(tipo, id){
     bodyHtml:`
       <div class="ticket-doc" id="ticket-print-area">
         <div class="ticket-doc-head">
-          <div><h3 style="font-size:16px;">${escapeHtml(cfg.nomeEmpresa||'Vetta RH')}</h3><div class="mono" style="font-size:13px;color:var(--text-dim);">${escapeHtml(t.numero)}</div></div>
+          <div><h3 style="font-size:16px;">${escapeHtml(cfg.nomeEmpresa||'GráficosNet RH')}</h3><div class="mono" style="font-size:13px;color:var(--text-dim);">${escapeHtml(t.numero)}</div></div>
           <canvas class="ticket-qr" id="ticket-qr-canvas" width="120" height="120"></canvas>
         </div>
         <div class="ticket-grid">
@@ -2064,7 +2064,7 @@ function renderConfiguracoesPage(){
     <div class="panel" style="max-width:640px;">
       <h3>Identidade da empresa</h3>
       <div class="form-grid" style="margin-top:14px;">
-        <div class="field span-2"><label>Nome da empresa</label><input type="text" id="cfg-nome" value="${escapeHtml(cfg.nomeEmpresa||'Vetta RH')}"></div>
+        <div class="field span-2"><label>Nome da empresa</label><input type="text" id="cfg-nome" value="${escapeHtml(cfg.nomeEmpresa||'GráficosNet RH')}"></div>
         <div class="photo-upload">
           <div class="photo-preview" id="cfg-logo-preview" style="border-radius:8px;">${cfg.logo?`<img src="${cfg.logo}">`:icon('building')}</div>
           <label class="btn btn-ghost btn-sm" style="cursor:pointer;">Alterar logo<input type="file" id="cfg-logo-input" accept="image/*" class="hidden"></label>
@@ -2090,7 +2090,7 @@ function initConfiguracoesPage(){
   });
   document.getElementById('cfg-save').onclick = ()=>{
     const cfg = dbGet('configuracoes')||{};
-    cfg.nomeEmpresa = document.getElementById('cfg-nome').value || 'Vetta RH';
+    cfg.nomeEmpresa = document.getElementById('cfg-nome').value || 'GráficosNet RH';
     cfg.logo = logoData;
     cfg.tema = document.querySelector('input[name="cfg-tema"]:checked').value;
     cfg.idioma = document.getElementById('cfg-idioma').value;
@@ -2122,7 +2122,7 @@ function initBackupPage(){
   document.getElementById('btn-gerar-backup').onclick = ()=>{
     const payload = {};
     COLLECTIONS.forEach(c=>{ payload[c] = dbGet(c); });
-    payload.__meta = {geradoEm: nowISO(), sistema:'Vetta RH', versao:'1.0'};
+    payload.__meta = {geradoEm: nowISO(), sistema:'GráficosNet RH', versao:'1.0'};
     const d = new Date();
     const stamp = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}-${String(d.getHours()).padStart(2,'0')}-${String(d.getMinutes()).padStart(2,'0')}-${String(d.getSeconds()).padStart(2,'0')}`;
     downloadFile(`backup-rh-${stamp}.json`, JSON.stringify(payload, null, 2), 'application/json');
@@ -2166,7 +2166,7 @@ function initRestaurarPage(){
       catch(e){ errBox.textContent = 'Arquivo inválido: o conteúdo não é um JSON válido.'; errBox.style.display='block'; return; }
       const hasAnyCollection = COLLECTIONS.some(c => Array.isArray(parsed[c]) || (c==='configuracoes' && typeof parsed[c]==='object'));
       if(!hasAnyCollection){
-        errBox.textContent = 'Arquivo inválido: não contém dados reconhecíveis do sistema Vetta RH.';
+        errBox.textContent = 'Arquivo inválido: não contém dados reconhecíveis do sistema GráficosNet RH.';
         errBox.style.display = 'block';
         return;
       }
@@ -2232,7 +2232,7 @@ function renderSobrePage(){
   return `
     <div class="page-header"><div><h1 class="page-title">Sobre</h1></div></div>
     <div class="panel" style="max-width:640px;">
-      <h3>${escapeHtml(cfg.nomeEmpresa||'Vetta RH')} — Sistema de Gestão de Recursos Humanos</h3>
+      <h3>${escapeHtml(cfg.nomeEmpresa||'GráficosNet RH')} — Sistema de Gestão de Recursos Humanos</h3>
       <p style="font-size:13.5px;color:var(--text-dim);margin:14px 0;line-height:1.6;">
         Sistema desenvolvido inteiramente em HTML5, CSS3 e JavaScript puro (ES6+), sem frameworks ou bibliotecas
         externas. Todos os dados são armazenados localmente no navegador através da API de LocalStorage — nenhuma
